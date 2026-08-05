@@ -68,7 +68,7 @@ function ProjectDetailPage() {
   const deleteMutation = useMutation({
     mutationFn: async () => {
       if (!data?.project) return;
-      await deleteProject(data.project, data.images);
+      await deleteProject(data.project, images);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
@@ -79,6 +79,7 @@ function ProjectDetailPage() {
   });
 
   const project = data?.project ?? null;
+  const images = data?.images ?? [];
 
   return (
     <div className="min-h-screen">
@@ -171,13 +172,13 @@ function ProjectDetailPage() {
               </figure>
             </div>
 
-            {data.images.length > 0 && (
+            {images.length > 0 && (
               <section className="mt-8">
                 <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                   {t("detail.gallery")}
                 </h2>
                 <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-5">
-                  {data.images.map((image) => (
+                  {images.map((image) => (
                     <StoredImage
                       key={image.id}
                       path={image.image_url}
@@ -205,7 +206,7 @@ function ProjectDetailPage() {
                     description: project.description,
                     referencePath: project.reference_image_url,
                     fabricPath: project.fabric_image_url,
-                    extraPaths: data.images.map((i) => i.image_url),
+                    extraPaths: images.map((i) => i.image_url),
                     status: project.status,
                   }}
                   submitting={updateMutation.isPending}
