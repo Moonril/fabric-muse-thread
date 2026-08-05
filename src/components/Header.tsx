@@ -105,9 +105,7 @@ export function Header() {
                 <Link to="/auth">{t("nav.login")}</Link>
               </Button>
               <Button size="sm" asChild>
-                <Link to="/auth" search={{ mode: "signup" }}>
-                  {t("nav.signup")}
-                </Link>
+                <Link to="/auth">{t("nav.signup")}</Link>
               </Button>
             </div>
           )}
