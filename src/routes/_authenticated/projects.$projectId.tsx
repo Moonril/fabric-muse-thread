@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Header } from "@/components/Header";
+import { ImageLightbox } from "@/components/ImageLightbox";
 import { ProjectForm, type ProjectFormValues } from "@/components/ProjectForm";
 import { StoredImage } from "@/components/StoredImage";
 import {
@@ -35,11 +36,24 @@ function ProjectDetailPage() {
   const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["project", projectId],
     queryFn: () => fetchProject(projectId),
   });
+
+  const allImagePaths = [
+    data?.project?.reference_image_url,
+    data?.project?.fabric_image_url,
+    ...(data?.images?.map((i) => i.image_url) ?? []),
+  ].filter((p): p is string => Boolean(p));
+
+  const allImageLabels = [
+    t("detail.reference"),
+    t("detail.fabric"),
+    ...(data?.images?.map(() => t("detail.gallery")) ?? []),
+  ].filter((_, i) => Boolean(allImagePaths[i]));
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["project", projectId] });
@@ -162,12 +176,30 @@ function ProjectDetailPage() {
             </div>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              <figure className="card-surface overflow-hidden">
-                <StoredImage path={project.reference_image_url} alt={t("detail.reference")} className="h-64 w-full" />
+              <figure
+                className="card-surface group cursor-pointer overflow-hidden"
+                onClick={() => setLightboxIndex(0)}
+                role="button"
+                aria-label={t("detail.viewImage")}
+              >
+                <StoredImage
+                  path={project.reference_image_url}
+                  alt={t("detail.reference")}
+                  className="h-64 w-full transition-transform duration-300 group-hover:scale-105"
+                />
                 <figcaption className="px-4 py-3 text-sm font-medium">{t("detail.reference")}</figcaption>
               </figure>
-              <figure className="card-surface overflow-hidden">
-                <StoredImage path={project.fabric_image_url} alt={t("detail.fabric")} className="h-64 w-full" />
+              <figure
+                className="card-surface group cursor-pointer overflow-hidden"
+                onClick={() => setLightboxIndex(project.reference_image_url ? 1 : 0)}
+                role="button"
+                aria-label={t("detail.viewImage")}
+              >
+                <StoredImage
+                  path={project.fabric_image_url}
+                  alt={t("detail.fabric")}
+                  className="h-64 w-full transition-transform duration-300 group-hover:scale-105"
+                />
                 <figcaption className="px-4 py-3 text-sm font-medium">{t("detail.fabric")}</figcaption>
               </figure>
             </div>
@@ -178,14 +210,24 @@ function ProjectDetailPage() {
                   {t("detail.gallery")}
                 </h2>
                 <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-5">
-                  {images.map((image) => (
-                    <StoredImage
-                      key={image.id}
-                      path={image.image_url}
-                      alt={t("detail.gallery")}
-                      className="aspect-square w-full rounded-lg border border-border"
-                    />
-                  ))}
+                  {images.map((image, index) => {
+                    const offset =
+                      (project.reference_image_url ? 1 : 0) + (project.fabric_image_url ? 1 : 0);
+                    return (
+                      <button
+                        key={image.id}
+                        onClick={() => setLightboxIndex(offset + index)}
+                        className="group relative aspect-square w-full overflow-hidden rounded-lg border border-border text-left"
+                        aria-label={t("detail.viewImage")}
+                      >
+                        <StoredImage
+                          path={image.image_url}
+                          alt={t("detail.gallery")}
+                          className="h-full w-full transition-transform duration-300 group-hover:scale-105"
+                        />
+                      </button>
+                    );
+                  })}
                 </div>
               </section>
             )}
@@ -194,6 +236,16 @@ function ProjectDetailPage() {
               {t("detail.created")} {new Date(project.created_at).toLocaleString()} · {t("detail.updated")}{" "}
               {new Date(project.updated_at).toLocaleString()}
             </p>
+
+            {lightboxIndex !== null && (
+              <ImageLightbox
+                paths={allImagePaths}
+                labels={allImageLabels}
+                currentIndex={lightboxIndex}
+                onClose={() => setLightboxIndex(null)}
+                onChangeIndex={setLightboxIndex}
+              />
+            )}
 
             <Dialog open={editing} onOpenChange={(v) => !updateMutation.isPending && setEditing(v)}>
               <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
