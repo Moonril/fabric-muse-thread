@@ -210,14 +210,24 @@ function ProjectDetailPage() {
                   {t("detail.gallery")}
                 </h2>
                 <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-5">
-                  {images.map((image) => (
-                    <StoredImage
-                      key={image.id}
-                      path={image.image_url}
-                      alt={t("detail.gallery")}
-                      className="aspect-square w-full rounded-lg border border-border"
-                    />
-                  ))}
+                  {images.map((image, index) => {
+                    const offset =
+                      (project.reference_image_url ? 1 : 0) + (project.fabric_image_url ? 1 : 0);
+                    return (
+                      <button
+                        key={image.id}
+                        onClick={() => setLightboxIndex(offset + index)}
+                        className="group relative aspect-square w-full overflow-hidden rounded-lg border border-border text-left"
+                        aria-label={t("detail.viewImage")}
+                      >
+                        <StoredImage
+                          path={image.image_url}
+                          alt={t("detail.gallery")}
+                          className="h-full w-full transition-transform duration-300 group-hover:scale-105"
+                        />
+                      </button>
+                    );
+                  })}
                 </div>
               </section>
             )}
