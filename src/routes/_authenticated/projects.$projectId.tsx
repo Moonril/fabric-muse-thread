@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Header } from "@/components/Header";
+import { ImageLightbox } from "@/components/ImageLightbox";
 import { ProjectForm, type ProjectFormValues } from "@/components/ProjectForm";
 import { StoredImage } from "@/components/StoredImage";
 import {
