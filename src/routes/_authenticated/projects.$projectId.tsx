@@ -46,13 +46,13 @@ function ProjectDetailPage() {
   const allImagePaths = [
     data?.project?.reference_image_url,
     data?.project?.fabric_image_url,
-    ...data?.images.map((i) => i.image_url),
+    ...(data?.images?.map((i) => i.image_url) ?? []),
   ].filter((p): p is string => Boolean(p));
 
   const allImageLabels = [
     t("detail.reference"),
     t("detail.fabric"),
-    ...data?.images.map(() => t("detail.gallery")),
+    ...(data?.images?.map(() => t("detail.gallery")) ?? []),
   ].filter((_, i) => Boolean(allImagePaths[i]));
 
   const invalidate = () => {
