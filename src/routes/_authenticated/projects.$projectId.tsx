@@ -237,6 +237,16 @@ function ProjectDetailPage() {
               {new Date(project.updated_at).toLocaleString()}
             </p>
 
+            {lightboxIndex !== null && (
+              <ImageLightbox
+                paths={allImagePaths}
+                labels={allImageLabels}
+                currentIndex={lightboxIndex}
+                onClose={() => setLightboxIndex(null)}
+                onChangeIndex={setLightboxIndex}
+              />
+            )}
+
             <Dialog open={editing} onOpenChange={(v) => !updateMutation.isPending && setEditing(v)}>
               <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
                 <DialogHeader>
