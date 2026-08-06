@@ -176,12 +176,30 @@ function ProjectDetailPage() {
             </div>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              <figure className="card-surface overflow-hidden">
-                <StoredImage path={project.reference_image_url} alt={t("detail.reference")} className="h-64 w-full" />
+              <figure
+                className="card-surface group cursor-pointer overflow-hidden"
+                onClick={() => setLightboxIndex(0)}
+                role="button"
+                aria-label={t("detail.viewImage")}
+              >
+                <StoredImage
+                  path={project.reference_image_url}
+                  alt={t("detail.reference")}
+                  className="h-64 w-full transition-transform duration-300 group-hover:scale-105"
+                />
                 <figcaption className="px-4 py-3 text-sm font-medium">{t("detail.reference")}</figcaption>
               </figure>
-              <figure className="card-surface overflow-hidden">
-                <StoredImage path={project.fabric_image_url} alt={t("detail.fabric")} className="h-64 w-full" />
+              <figure
+                className="card-surface group cursor-pointer overflow-hidden"
+                onClick={() => setLightboxIndex(project.reference_image_url ? 1 : 0)}
+                role="button"
+                aria-label={t("detail.viewImage")}
+              >
+                <StoredImage
+                  path={project.fabric_image_url}
+                  alt={t("detail.fabric")}
+                  className="h-64 w-full transition-transform duration-300 group-hover:scale-105"
+                />
                 <figcaption className="px-4 py-3 text-sm font-medium">{t("detail.fabric")}</figcaption>
               </figure>
             </div>
