@@ -73,7 +73,7 @@ const dict = {
     "detail.reference": "Reference",
     "detail.fabric": "Fabric",
     "detail.gallery": "Additional references",
-    "detail.noDescription": "No description yet.";
+    "detail.noDescription": "No description yet.",
     "detail.created": "Created",
     "detail.updated": "Updated",
     "detail.viewImage": "View image",
