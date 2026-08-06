@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Images, Layers, Palette } from "lucide-react";
 
-import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+
+const HERO_IMAGE = "https://images.pexels.com/photos/19323406/pexels-photo-19323406.jpeg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,6 +21,10 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "A calm, mobile-first tracker for design projects, references and fabrics.",
       },
+      { property: "og:image", content: HERO_IMAGE },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: HERO_IMAGE },
     ],
   }),
   component: Index,
@@ -34,40 +38,22 @@ function Index() {
   });
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="mx-auto w-full max-w-5xl px-4 py-16 sm:py-24">
-        <section className="max-w-2xl">
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-            {t("app.name")}
-          </p>
-          <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">
-            {t("landing.heroTitle")}
-          </h1>
-          <p className="mt-4 text-base text-muted-foreground sm:text-lg">{t("landing.heroBody")}</p>
-          <div className="mt-8">
-            <Button asChild size="lg">
-              <Link to={session ? "/home" : "/auth"}>
-                {session ? t("nav.projects") : t("landing.cta")}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </section>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
+      <img
+        src={HERO_IMAGE}
+        alt=""
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+        loading="eager"
+      />
+      <div className="absolute inset-0 bg-black/45" />
 
-        <section className="mt-16 grid gap-4 sm:grid-cols-3">
-          {[
-            { icon: Layers, key: "form.reference" as const },
-            { icon: Palette, key: "form.fabric" as const },
-            { icon: Images, key: "detail.gallery" as const },
-          ].map(({ icon: Icon, key }) => (
-            <div key={key} className="card-surface p-6">
-              <Icon className="h-5 w-5 text-primary" />
-              <h2 className="mt-3 text-base font-semibold">{t(key)}</h2>
-              <p className="mt-1 text-sm text-muted-foreground">{t("app.tagline")}</p>
-            </div>
-          ))}
-        </section>
+      <main className="relative z-10 flex flex-col items-center px-4 text-center">
+        <h1 className="text-6xl font-semibold tracking-tight text-white sm:text-8xl">
+          {t("app.name")}
+        </h1>
+        <Button asChild size="lg" className="mt-10 text-base">
+          <Link to={session ? "/home" : "/auth"}>{t("landing.cta")}</Link>
+        </Button>
       </main>
     </div>
   );
