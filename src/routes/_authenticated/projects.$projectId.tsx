@@ -36,11 +36,24 @@ function ProjectDetailPage() {
   const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["project", projectId],
     queryFn: () => fetchProject(projectId),
   });
+
+  const allImagePaths = [
+    data?.project?.reference_image_url,
+    data?.project?.fabric_image_url,
+    ...data?.images.map((i) => i.image_url),
+  ].filter((p): p is string => Boolean(p));
+
+  const allImageLabels = [
+    t("detail.reference"),
+    t("detail.fabric"),
+    ...data?.images.map(() => t("detail.gallery")),
+  ].filter((_, i) => Boolean(allImagePaths[i]));
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["project", projectId] });
