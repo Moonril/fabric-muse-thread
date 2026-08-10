@@ -23,7 +23,7 @@ function HomePage() {
   const { t } = useI18n();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [filter, setFilter] = useState<"all" | ProjectStatus>("all");
+  const [filter, setFilter] = useState<"all" | ProjectStatus>("active");
   const [open, setOpen] = useState(false);
 
   const { data, isPending, isError, refetch } = useQuery({
