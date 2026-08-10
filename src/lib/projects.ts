@@ -64,8 +64,12 @@ export async function signedUrl(path: string): Promise<string> {
   return data.signedUrl;
 }
 
+function isStoragePath(value: string) {
+  return !/^https?:\/\//i.test(value);
+}
+
 export async function removeImage(path: string | null | undefined) {
-  if (!path) return;
+  if (!path || !isStoragePath(path)) return;
   await supabase.storage.from(BUCKET).remove([path]);
 }
 
@@ -140,7 +144,7 @@ export async function setProjectStatus(id: string, status: ProjectStatus) {
 
 export async function deleteProject(project: Project, images: ProjectImage[]) {
   const paths = [project.reference_image_url, project.fabric_image_url, ...images.map((i) => i.image_url)].filter(
-    (p): p is string => Boolean(p),
+    (p): p is string => Boolean(p) && isStoragePath(p as string),
   );
   const { error } = await supabase.from("projects").delete().eq("id", project.id);
   if (error) throw error;

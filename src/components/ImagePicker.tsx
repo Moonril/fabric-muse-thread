@@ -1,11 +1,21 @@
-import { Loader2, Plus, X } from "lucide-react";
+import { Link2, Loader2, Plus, Upload, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { StoredImage } from "@/components/StoredImage";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useI18n } from "@/lib/i18n";
 import { uploadImage } from "@/lib/projects";
+
+function isValidImageUrl(value: string) {
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
 
 export function ImagePicker({
   label,
@@ -19,6 +29,8 @@ export function ImagePicker({
   const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [urlOpen, setUrlOpen] = useState(false);
+  const [url, setUrl] = useState("");
 
   async function handleFile(file: File | undefined) {
     if (!file) return;
@@ -34,6 +46,16 @@ export function ImagePicker({
     }
   }
 
+  function submitUrl() {
+    if (!isValidImageUrl(url)) {
+      toast.error(t("form.err.url"));
+      return;
+    }
+    onChange(url.trim());
+    setUrl("");
+    setUrlOpen(false);
+  }
+
   return (
     <div className="space-y-2">
       <span className="text-sm font-medium">{label}</span>
@@ -41,19 +63,29 @@ export function ImagePicker({
         {path ? (
           <StoredImage path={path} alt={label} className="h-40 w-full" />
         ) : (
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            className="flex h-40 w-full flex-col items-center justify-center gap-2 text-sm text-muted-foreground transition-colors hover:bg-muted"
-          >
+          <div className="flex h-40 w-full flex-col items-center justify-center gap-2 text-sm text-muted-foreground">
             {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
             <span>{uploading ? t("form.saving") : t("form.addImage")}</span>
-          </button>
+            <div className="flex gap-2">
+              <Button type="button" size="sm" variant="secondary" onClick={() => inputRef.current?.click()}>
+                <Upload className="mr-1.5 h-3.5 w-3.5" />
+                {t("form.upload")}
+              </Button>
+              <Button type="button" size="sm" variant="outline" onClick={() => setUrlOpen((v) => !v)}>
+                <Link2 className="mr-1.5 h-3.5 w-3.5" />
+                {t("form.fromUrl")}
+              </Button>
+            </div>
+          </div>
         )}
         {path && (
           <div className="absolute right-2 top-2 flex gap-1">
             <Button type="button" size="sm" variant="secondary" onClick={() => inputRef.current?.click()}>
               {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : t("form.replace")}
+            </Button>
+            <Button type="button" size="icon" variant="secondary" onClick={() => setUrlOpen((v) => !v)}>
+              <Link2 className="h-3.5 w-3.5" />
+              <span className="sr-only">{t("form.fromUrl")}</span>
             </Button>
             <Button type="button" size="icon" variant="secondary" onClick={() => onChange(null)}>
               <X className="h-3.5 w-3.5" />
@@ -62,6 +94,24 @@ export function ImagePicker({
           </div>
         )}
       </div>
+      {urlOpen && (
+        <div className="flex gap-2">
+          <Input
+            value={url}
+            placeholder={t("form.urlPlaceholder")}
+            onChange={(e) => setUrl(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                submitUrl();
+              }
+            }}
+          />
+          <Button type="button" size="sm" onClick={submitUrl}>
+            {t("form.addUrl")}
+          </Button>
+        </div>
+      )}
       <input
         ref={inputRef}
         type="file"
@@ -83,6 +133,8 @@ export function ExtraImagePicker({
   const { t } = useI18n();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [urlOpen, setUrlOpen] = useState(false);
+  const [url, setUrl] = useState("");
 
   async function handleFiles(files: FileList | null) {
     if (!files?.length) return;
@@ -107,6 +159,20 @@ export function ExtraImagePicker({
     }
   }
 
+  function submitUrl() {
+    if (paths.length >= 5) {
+      toast.error(t("form.err.max"));
+      return;
+    }
+    if (!isValidImageUrl(url)) {
+      toast.error(t("form.err.url"));
+      return;
+    }
+    onChange([...paths, url.trim()]);
+    setUrl("");
+    setUrlOpen(false);
+  }
+
   return (
     <div className="space-y-2">
       <span className="text-sm font-medium">{t("form.extra")}</span>
@@ -125,16 +191,44 @@ export function ExtraImagePicker({
           </div>
         ))}
         {paths.length < 5 && (
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            className="flex aspect-square items-center justify-center rounded-md border border-dashed border-border text-muted-foreground transition-colors hover:bg-muted"
-            aria-label={t("form.addImage")}
-          >
-            {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-          </button>
+          <div className="flex aspect-square flex-col items-center justify-center gap-1 rounded-md border border-dashed border-border text-muted-foreground">
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              className="rounded p-1 transition-colors hover:bg-muted"
+              aria-label={t("form.upload")}
+            >
+              {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => setUrlOpen((v) => !v)}
+              className="rounded p-1 transition-colors hover:bg-muted"
+              aria-label={t("form.fromUrl")}
+            >
+              <Link2 className="h-4 w-4" />
+            </button>
+          </div>
         )}
       </div>
+      {urlOpen && paths.length < 5 && (
+        <div className="flex gap-2">
+          <Input
+            value={url}
+            placeholder={t("form.urlPlaceholder")}
+            onChange={(e) => setUrl(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                submitUrl();
+              }
+            }}
+          />
+          <Button type="button" size="sm" onClick={submitUrl}>
+            {t("form.addUrl")}
+          </Button>
+        </div>
+      )}
       <input
         ref={inputRef}
         type="file"
