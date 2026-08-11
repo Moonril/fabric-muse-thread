@@ -1,8 +1,24 @@
 # Thread Weaver
 
-Progetti
+![preview](/public/readMe/preview.png)
+
+A web app to keep track of my DIY projects created through Lovable, deployed through Vercel and Supabase, complete with functioning Login feature and handling of recipes.
+
+![preview](/public/readMe/projects-page.png)
+![preview](/public/readMe/detail-page.png)
+![preview](/public/readMe/navbar.png)
+![preview](/public/readMe/filter.png)
+![preview](/public/readMe/new-project.png)
+
+light mode
+
+![preview](/public/readMe/light-mode.png)
+![preview](/public/readMe/edit-light.png)
+
 
 # Project Tracker — Lovable Prompt
+
+Final prompt used to generate the app
 
 ## Overview
 
@@ -151,22 +167,3 @@ Use Supabase Storage buckets for image uploads (e.g. `project-images`), with Row
 - Persistent header/nav with: app logo/name, dark/light mode toggle, language toggle (EN/IT), user menu (profile, log out)
 
 This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/bdd50423-4684-40a4-8a5f-cf0572177fdd).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
