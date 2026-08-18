@@ -93,6 +93,9 @@ export function Header() {
                 <DropdownMenuItem asChild>
                   <Link to="/home">{t("nav.projects")}</Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/shopping">{t("shopping.nav")}</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem onSelect={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />
                   {t("nav.logout")}

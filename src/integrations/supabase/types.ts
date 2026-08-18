@@ -100,6 +100,50 @@ export type Database = {
         }
         Relationships: []
       }
+      shopping_items: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          project_id: string | null
+          purchased: boolean
+          quantity: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          project_id?: string | null
+          purchased?: boolean
+          quantity?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          project_id?: string | null
+          purchased?: boolean
+          quantity?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shopping_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

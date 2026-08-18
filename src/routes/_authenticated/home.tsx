@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { Plus, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -52,10 +52,18 @@ function HomePage() {
       <main className="mx-auto w-full max-w-5xl px-4 py-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-semibold">{t("home.title")}</h1>
-          <Button className="hidden sm:inline-flex" onClick={() => setOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            {t("home.new")}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" asChild>
+              <Link to="/shopping">
+                <ShoppingBag className="mr-2 h-4 w-4" />
+                {t("shopping.nav")}
+              </Link>
+            </Button>
+            <Button className="hidden sm:inline-flex" onClick={() => setOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              {t("home.new")}
+            </Button>
+          </div>
         </div>
 
         <Tabs value={filter} onValueChange={(v) => setFilter(v as "all" | ProjectStatus)} className="mt-6">
