@@ -122,6 +122,13 @@ const dict = {
     "shopping.markToBuy": "Move back to buy",
     "shopping.delete": "Remove item",
     "settings.language": "Language",
+    "measure.title": "Body measurements",
+    "measure.subtitle": "Your own measurements, saved once and editable any time.",
+    "measure.save": "Save measurements",
+    "measure.saved": "Measurements saved",
+    "measure.units": "Lengths in millimetres, angles in degrees",
+    "measure.err.number": "Measurements must be numbers.",
+    "measure.nav": "Measurements",
   },
   it: {
     "app.name": "Thread",
@@ -242,6 +249,13 @@ const dict = {
     "shopping.markToBuy": "Rimetti da comprare",
     "shopping.delete": "Rimuovi articolo",
     "settings.language": "Lingua",
+    "measure.title": "Misure corporee",
+    "measure.subtitle": "Le tue misure, salvate una volta e modificabili in qualsiasi momento.",
+    "measure.save": "Salva misure",
+    "measure.saved": "Misure salvate",
+    "measure.units": "Lunghezze in millimetri, angoli in gradi",
+    "measure.err.number": "Le misure devono essere numeri.",
+    "measure.nav": "Misure",
   },
 } as const;
 
