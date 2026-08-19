@@ -14,7 +14,10 @@ import {
   MEASUREMENT_FIELDS,
   MEASUREMENT_GROUPS,
   fetchMeasurements,
+  fromMm,
   saveMeasurements,
+  toMm,
+  type LengthUnit,
   type MeasurementValues,
 } from "@/lib/measurements";
 
@@ -43,6 +46,30 @@ function ProfilePage() {
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState<Record<string, string>>({});
   const [loaded, setLoaded] = useState(false);
+  const [unit, setUnit] = useState<LengthUnit>(() => {
+    if (typeof window === "undefined") return "cm";
+    return (window.localStorage.getItem("thread.lengthUnit") as LengthUnit) ?? "cm";
+  });
+
+  function switchUnit(next: LengthUnit) {
+    setUnit((prev) => {
+      if (prev === next) return prev;
+      setDraft((d) => {
+        const converted: Record<string, string> = { ...d };
+        for (const field of MEASUREMENT_FIELDS) {
+          if (field.unit !== "mm") continue;
+          const raw = d[field.key]?.trim();
+          if (!raw) continue;
+          const parsed = Number(raw.replace(",", "."));
+          if (Number.isNaN(parsed)) continue;
+          converted[field.key] = String(fromMm(toMm(parsed, prev), next));
+        }
+        return converted;
+      });
+      if (typeof window !== "undefined") window.localStorage.setItem("thread.lengthUnit", next);
+      return next;
+    });
+  }
 
   const record = useQuery({ queryKey: ["measurements"], queryFn: fetchMeasurements });
 
@@ -52,11 +79,14 @@ function ProfilePage() {
     const next: Record<string, string> = {};
     for (const field of MEASUREMENT_FIELDS) {
       const value = values[field.key];
-      next[field.key] = value === null || value === undefined ? "" : String(value);
+      next[field.key] =
+        value === null || value === undefined
+          ? ""
+          : String(field.unit === "mm" ? fromMm(value, unit) : value);
     }
     setDraft(next);
     setLoaded(true);
-  }, [loaded, record.isLoading, record.data]);
+  }, [loaded, record.isLoading, record.data, unit]);
 
   const saveMutation = useMutation({
     mutationFn: (values: MeasurementValues) => saveMeasurements(values, record.data?.type ?? "complete"),
@@ -83,7 +113,7 @@ function ProfilePage() {
         toast.error(t("measure.err.number"));
         return;
       }
-      values[field.key] = parsed;
+      values[field.key] = field.unit === "mm" ? toMm(parsed, unit) : parsed;
     }
     saveMutation.mutate(values);
   }
@@ -99,14 +129,35 @@ function ProfilePage() {
             </h1>
             <p className="mt-1 max-w-xl text-sm text-muted-foreground">{t("measure.subtitle")}</p>
           </div>
-          <Button onClick={handleSave} disabled={saveMutation.isPending || !loaded}>
+          <div className="flex items-center gap-3">
+            <div
+              className="inline-flex rounded-lg border border-border bg-card p-0.5"
+              role="group"
+              aria-label={t("measure.unitToggle")}
+            >
+              {(["cm", "in"] as LengthUnit[]).map((u) => (
+                <Button
+                  key={u}
+                  type="button"
+                  size="sm"
+                  variant={unit === u ? "secondary" : "ghost"}
+                  className="h-8 px-3 text-xs"
+                  aria-pressed={unit === u}
+                  onClick={() => switchUnit(u)}
+                >
+                  {u === "cm" ? t("measure.unitCm") : t("measure.unitIn")}
+                </Button>
+              ))}
+            </div>
+            <Button onClick={handleSave} disabled={saveMutation.isPending || !loaded}>
             {saveMutation.isPending ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <Save className="mr-2 h-4 w-4" />
             )}
-            {saveMutation.isPending ? t("form.saving") : t("measure.save")}
-          </Button>
+              {saveMutation.isPending ? t("form.saving") : t("measure.save")}
+            </Button>
+          </div>
         </div>
 
         <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
@@ -131,7 +182,9 @@ function ProfilePage() {
                   {group.fields.map((field) => (
                     <div key={field.key} className="space-y-1.5">
                       <Label htmlFor={field.key} className="text-xs text-muted-foreground">
-                        {lang === "it" ? field.it : field.en} ({field.unit})
+                        {lang === "it" ? field.it : field.en} (
+                        {field.unit === "mm" ? (unit === "cm" ? t("measure.unitCm") : t("measure.unitIn")) : field.unit}
+                        )
                       </Label>
                       <Input
                         id={field.key}

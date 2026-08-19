@@ -91,6 +91,20 @@ export const MEASUREMENT_GROUPS: MeasurementGroup[] = [
 
 export const MEASUREMENT_FIELDS: MeasurementField[] = MEASUREMENT_GROUPS.flatMap((g) => g.fields);
 
+export type LengthUnit = "cm" | "in";
+
+/** Values are stored in millimetres. Convert to the display unit. */
+export function fromMm(mm: number, unit: LengthUnit): number {
+  const value = unit === "cm" ? mm / 10 : mm / 25.4;
+  return Math.round(value * 100) / 100;
+}
+
+/** Convert a display value back to millimetres for storage. */
+export function toMm(value: number, unit: LengthUnit): number {
+  const mm = unit === "cm" ? value * 10 : value * 25.4;
+  return Math.round(mm * 100) / 100;
+}
+
 export async function fetchMeasurements(): Promise<MeasurementRecord | null> {
   const { data, error } = await supabase.from("body_measurements").select("*").maybeSingle();
   if (error) throw error;
