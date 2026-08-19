@@ -249,6 +249,13 @@ const dict = {
     "shopping.markToBuy": "Rimetti da comprare",
     "shopping.delete": "Rimuovi articolo",
     "settings.language": "Lingua",
+    "measure.title": "Misure corporee",
+    "measure.subtitle": "Le tue misure, salvate una volta e modificabili in qualsiasi momento.",
+    "measure.save": "Salva misure",
+    "measure.saved": "Misure salvate",
+    "measure.units": "Lunghezze in millimetri, angoli in gradi",
+    "measure.err.number": "Le misure devono essere numeri.",
+    "measure.nav": "Misure",
   },
 } as const;
 
