@@ -122,6 +122,13 @@ const dict = {
     "shopping.markToBuy": "Move back to buy",
     "shopping.delete": "Remove item",
     "settings.language": "Language",
+    "measure.title": "Body measurements",
+    "measure.subtitle": "Your own measurements, saved once and editable any time.",
+    "measure.save": "Save measurements",
+    "measure.saved": "Measurements saved",
+    "measure.units": "Lengths in millimetres, angles in degrees",
+    "measure.err.number": "Measurements must be numbers.",
+    "measure.nav": "Measurements",
   },
   it: {
     "app.name": "Thread",
