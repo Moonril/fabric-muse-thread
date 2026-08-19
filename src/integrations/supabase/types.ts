@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      body_measurements: {
+        Row: {
+          created_at: string
+          type: string
+          updated_at: string
+          user_id: string
+          values: Json
+        }
+        Insert: {
+          created_at?: string
+          type?: string
+          updated_at?: string
+          user_id: string
+          values?: Json
+        }
+        Update: {
+          created_at?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+          values?: Json
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
