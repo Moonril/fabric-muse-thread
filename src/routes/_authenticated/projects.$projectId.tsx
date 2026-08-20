@@ -141,7 +141,7 @@ function ProjectDetailPage() {
                     {project.status === "completed" ? t("status.completed") : t("status.active")}
                   </Badge>
                 </div>
-                <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                <p className="mt-2 max-w-2xl text-sm text-muted-foreground whitespace-pre-line">
                   {project.description || t("detail.noDescription")}
                 </p>
               </div>
