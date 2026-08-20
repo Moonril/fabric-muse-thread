@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, Ruler, Save } from "lucide-react";
+import { Link, Loader2, Ruler, Save } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -26,10 +26,6 @@ export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
     meta: [
       { title: "Profile & measurements — Thread" },
-      {
-        name: "description",
-        content: "Store and update your own body measurements so every Thread project starts from the right numbers.",
-      },
       { property: "og:title", content: "Profile & measurements — Thread" },
       {
         property: "og:description",
@@ -127,7 +123,7 @@ function ProfilePage() {
             <h1 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
               {t("measure.title")}
             </h1>
-            <p className="mt-1 max-w-xl text-sm text-muted-foreground">{t("measure.subtitle")}</p>
+            
           </div>
           <div className="flex items-center gap-3">
             <div
@@ -162,7 +158,7 @@ function ProfilePage() {
 
         <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
           <Ruler className="h-3.5 w-3.5" aria-hidden />
-          {filledCount}/{MEASUREMENT_FIELDS.length} · {t("measure.units")}
+          {filledCount}/{MEASUREMENT_FIELDS.length} · <a href="https://www.dressdeveloper.com/measure-set/complete/">measurements reference</a> <Link className="h-3.5 w-3.5" />
         </p>
 
         {record.isLoading ? (
